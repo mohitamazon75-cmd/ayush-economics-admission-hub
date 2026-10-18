@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f7f3" />
+    <meta
+      name="description"
+      content="Ayush's personalised Economics admission preparation hub for IIM Bangalore and related undergraduate routes."
+    />
+    <title>Ayush's Economics Admission Prep Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">A</div>
+          <div>
+            <p class="eyebrow">ADMISSION STUDIO</p>
+            <strong>Ayush's Hub</strong>
+          </div>
+        </div>
+        <div class="sidebar-rule"></div>
+        <nav id="desktop-nav" class="nav-list"></nav>
+        <div class="sidebar-bottom">
+          <div class="privacy-note">
+            <span class="status-dot"></span>
+            <div>
+              <strong>Private by default</strong>
+              <p>Your progress stays in this browser.</p>
+            </div>
+          </div>
+          <button class="text-button" data-action="reset-progress">Reset local progress</button>
+        </div>
+      </aside>
+
+      <div class="main-column">
+        <header class="topbar">
+          <div class="mobile-brand">
+            <div class="brand-mark small" aria-hidden="true">A</div>
+            <span>Ayush's Hub</span>
+          </div>
+          <div class="topbar-context">
+            <span class="live-pill"><span class="status-dot"></span> Offline-ready</span>
+            <span id="today-label" class="today-label"></span>
+          </div>
+          <button class="menu-button" data-action="toggle-mobile-nav" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+        </header>
+        <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation"></nav>
+
+        <main id="app" tabindex="-1"></main>
+
+        <footer class="site-footer">
+          <div>
+            <strong>Built for honest readiness.</strong>
+            <p>Official facts are labelled. Practice questions are original and clearly marked.</p>
+          </div>
+          <button class="text-button" data-action="show-sources">View source notes</button>
+        </footer>
+      </div>
+    </div>
+
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <div id="modal-root"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
