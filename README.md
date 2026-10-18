@@ -10,6 +10,7 @@ An offline-first, single-page HTML dashboard for Ayush's undergraduate admission
 - 32 micro-presentation topics with a 90-second timer, preparation countdown, optional browser recording and reflection notes.
 - Ten Economics Made Simple lessons with everyday examples and five-question checks.
 - Verified route cards for CHRIST BSc Economics, NM College's B.Com (Economics) routes, St. Xavier's BA route and CUET (UG).
+- Separate route-readiness modules for NM, St. Xavier's, CHRIST and CUET with confirmed facts, verification checklists, daily plans and six original practice questions each.
 - Local-only progress storage through `localStorage`, a downloadable plain-text result summary, keyboard-friendly controls and responsive layouts.
 - No paid APIs, no secret keys and no AI scoring claim. Interview evaluation is an honest offline rubric; speech input and recording use browser capabilities when available.
 

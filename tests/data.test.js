@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  COLLEGE_PREP,
   COLLEGES,
   ECONOMICS_LESSONS,
   IIMB_MOCKS,
@@ -80,4 +81,22 @@ test("official sources and college routes are explicit and labelled", () => {
   assert.ok(SOURCES.records.every((source) => source.verifiedOn === SOURCES.verificationDate));
   assert.ok(COLLEGES.some((college) => college.programme.includes("not an Economics degree")) || COLLEGES.some((college) => college.programmeType.includes("not an Economics degree")));
   assert.ok(COLLEGES.some((college) => college.id === "cuet-ug"));
+});
+
+test("each non-IIMB route has a separate honest readiness module", () => {
+  for (const collegeId of ["nm-bcom-economics", "st-xaviers-ba", "christ-bsc-economics", "cuet-ug"]) {
+    const module = COLLEGE_PREP[collegeId];
+    assert.ok(module, `missing route module ${collegeId}`);
+    assert.ok(module.confirmed.length >= 2);
+    assert.ok(module.verifyNext.length >= 2);
+    assert.ok(module.dailyPlan.length >= 3);
+    assert.ok(module.checklist.length >= 4);
+    assert.equal(module.practiceQuestions.length, 6);
+    for (const question of module.practiceQuestions) {
+      assert.equal(question.answer, question.options[question.answerIndex]);
+      assert.equal(question.whyWrong.length, question.options.length - 1);
+      assert.match(question.contentLabel, /AI-created practice question/);
+    }
+  }
+  assert.equal(COLLEGE_PREP["cuet-ug"].officialPatternStatus, "not-claimed");
 });

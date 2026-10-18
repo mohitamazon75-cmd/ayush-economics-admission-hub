@@ -753,3 +753,555 @@ export const ECONOMICS_LESSONS = Object.freeze([
     ]
   }
 ]);
+
+const COLLEGE_PRACTICE_LABEL =
+  "AI-created practice question. Original readiness material, not an official question, past paper or published selection guidance.";
+
+const collegePracticeQuestion = ({
+  id,
+  prompt,
+  options,
+  answerIndex,
+  explanation,
+  whyWrong
+}) => ({
+  id,
+  prompt,
+  options,
+  answerIndex,
+  answer: options[answerIndex],
+  explanation,
+  contentLabel: COLLEGE_PRACTICE_LABEL,
+  whyWrong
+});
+
+export const COLLEGE_PREP = Object.freeze({
+  "nm-bcom-economics": {
+    collegeId: "nm-bcom-economics",
+    title: "NM B.Com (Economics): merit and application readiness",
+    moduleStatus: "merit-and-application-readiness",
+    confirmed: [
+      "The official NM College undergraduate admissions page lists B.Com (Economics).",
+      "The official page uses merit-by-Class-XII language; this module does not invent an entrance test or hard-code a merit threshold."
+    ],
+    verifyNext: [
+      "Read the live NM College undergraduate admissions page for the current form dates, eligibility wording, merit notice and category instructions.",
+      "Confirm the application portal, document list and any programme-specific instructions immediately before submitting."
+    ],
+    dailyPlan: [
+      "15 minutes: keep an application tracker with the official URL, verification date and unresolved questions.",
+      "20 minutes: organise Class XII marks information and identity or category documents without changing or embellishing any detail.",
+      "20 minutes: practise a truthful answer to why B.Com (Economics) fits your interests, using one real example.",
+      "10 minutes: check the live official notice for changes instead of relying on an old screenshot or message."
+    ],
+    checklist: [
+      "I have saved the current official admissions page and its verification date.",
+      "I know which academic record and documents the current notice asks me to provide.",
+      "I have not assumed a cutoff, rank, seat count or entrance test that the current notice does not state.",
+      "I can explain my interest in economics and commerce in my own words.",
+      "I will review every form field and uploaded document before final submission."
+    ],
+    practiceQuestions: [
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-01",
+        prompt: "The official NM page describes admission using merit-by-Class-XII language. What is the safest preparation conclusion?",
+        options: [
+          "Prepare for a guaranteed national entrance test",
+          "Track the current academic-merit notice and its instructions",
+          "Use a remembered cutoff as the application rule",
+          "Assume every applicant will receive the same outcome"
+        ],
+        answerIndex: 1,
+        explanation: "The source language points to checking the current academic-merit process. It does not justify inventing an exam, cutoff or guaranteed outcome.",
+        whyWrong: [
+          "The official note does not establish a national entrance test for this route.",
+          "A remembered cutoff may belong to another cycle and is not a substitute for the live notice.",
+          "Merit decisions and application outcomes are not guaranteed to be identical for every applicant."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-02",
+        prompt: "You find an old social-media post with a merit percentage. What should you do first?",
+        options: [
+          "Treat it as the current official rule",
+          "Forward it to every applicant",
+          "Check the current NM College notice and record the date you verified it",
+          "Add a few points to be safe and use that as a fact"
+        ],
+        answerIndex: 2,
+        explanation: "Admissions details can be cycle-specific, so the current institutional notice should be checked and dated before it is used.",
+        whyWrong: [
+          "An old or unofficial post does not establish the current rule.",
+          "Forwarding unverified information can spread an incorrect application claim.",
+          "Changing a number turns uncertainty into a fabricated fact."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-03",
+        prompt: "Which application habit best reduces avoidable errors?",
+        options: [
+          "Submit as soon as possible without reviewing documents",
+          "Use a checklist for dates, fields, files and final confirmation",
+          "Copy another student's personal details",
+          "Leave uncertain fields blank without checking instructions"
+        ],
+        answerIndex: 1,
+        explanation: "A dated checklist makes it easier to catch missing fields, incorrect files and deadlines before submission.",
+        whyWrong: [
+          "Speed without review increases the chance of a preventable mistake.",
+          "Another applicant's details are not your information and create an integrity problem.",
+          "An uncertain field should be clarified from the official instructions, not silently ignored."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-04",
+        prompt: "A strong answer to ‘Why B.Com (Economics)?’ should primarily:",
+        options: [
+          "Promise a guaranteed salary",
+          "Repeat the college name without explaining fit",
+          "Connect a genuine interest to what you want to learn",
+          "Claim achievements that are difficult to verify"
+        ],
+        answerIndex: 2,
+        explanation: "A useful application response explains a truthful academic interest and the learning fit without making guarantees or invented claims.",
+        whyWrong: [
+          "A guaranteed salary is not an honest or supportable admissions claim.",
+          "Repeating a name does not show why the programme fits the applicant.",
+          "Unverified achievements weaken credibility and should not be added for effect."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-05",
+        prompt: "If your marks document and application draft show different spellings of your name, the best next step is to:",
+        options: [
+          "Ignore it because the difference is small",
+          "Change the official document yourself",
+          "Check the official instructions and seek the appropriate correction route",
+          "Submit both versions and hope the system resolves it"
+        ],
+        answerIndex: 2,
+        explanation: "Identity mismatches should be resolved through the institution's stated correction or support process rather than improvised changes.",
+        whyWrong: [
+          "A small spelling difference can still delay verification or create confusion.",
+          "Official records should not be altered by the applicant.",
+          "Submitting conflicting records without guidance leaves the problem unresolved."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "nm-bcom-economics-prep-06",
+        prompt: "Which statement is most responsible when discussing NM admission with a friend?",
+        options: [
+          "The latest official notice is the authority for the current cycle",
+          "Every online coaching claim is equally reliable",
+          "A single past list guarantees this year's result",
+          "No document check is needed if marks are strong"
+        ],
+        answerIndex: 0,
+        explanation: "The current official notice is the appropriate source for the cycle's published process; preparation should remain honest about what is not known.",
+        whyWrong: [
+          "Coaching material may be useful for planning but is not automatically an admissions authority.",
+          "A past list cannot guarantee a future cycle's outcome.",
+          "Strong marks do not remove the need to follow the current document instructions."
+        ]
+      })
+    ]
+  },
+
+  "st-xaviers-ba": {
+    collegeId: "st-xaviers-ba",
+    title: "St. Xavier's BA: application and merit-readiness",
+    moduleStatus: "application-and-merit-readiness",
+    confirmed: [
+      "The official St. Xavier's College BA admissions page is the source for the displayed cycle's admission information.",
+      "The page includes cycle-specific seat, category and fee information; this module makes no invented entrance-test claim."
+    ],
+    verifyNext: [
+      "Check the live BA admissions page for the current application window, eligibility, seat or category wording and document instructions.",
+      "Confirm whether the current cycle publishes any additional selection or merit instructions before planning around them."
+    ],
+    dailyPlan: [
+      "15 minutes: read the live BA page and write down only facts that are visible there, with the date checked.",
+      "20 minutes: prepare a clean application folder for marks, identity and any documents the current notice requests.",
+      "20 minutes: practise a concise, truthful explanation of why a BA and economics-related study interest you.",
+      "10 minutes: rehearse checking an application form for names, dates, categories, uploads and confirmation receipts."
+    ],
+    checklist: [
+      "I am using the current official BA page rather than an old admission post.",
+      "I have not assumed an entrance test, cutoff or selection rule that the current page does not publish.",
+      "I have checked the current eligibility and document wording before preparing uploads.",
+      "I can explain my academic interests without presenting hobbies or plans as achievements.",
+      "I have a way to save the submitted form and any official acknowledgement."
+    ],
+    practiceQuestions: [
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-01",
+        prompt: "If the current BA page does not state an entrance test, what is the most careful conclusion?",
+        options: [
+          "An entrance test definitely exists but is hidden",
+          "No further checking is ever needed",
+          "Do not invent a test; verify the current selection and application instructions",
+          "Prepare using an unrelated college's paper"
+        ],
+        answerIndex: 2,
+        explanation: "Absence of a stated test is not permission to invent one or to stop checking. The live official instructions should guide preparation.",
+        whyWrong: [
+          "A hidden test is speculation, not a confirmed admissions fact.",
+          "Applicants still need to verify dates, documents and any updated instructions.",
+          "An unrelated paper cannot establish this route's selection process."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-02",
+        prompt: "When a page lists information for a displayed admission cycle, a careful applicant should:",
+        options: [
+          "Assume it applies forever",
+          "Record the cycle and recheck the live page for the intended application year",
+          "Replace the dates with a friend's dates",
+          "Ignore all official information until coaching material appears"
+        ],
+        answerIndex: 1,
+        explanation: "Cycle labels matter. Rechecking the live page keeps planning tied to the intended application year.",
+        whyWrong: [
+          "Admissions details can change between cycles.",
+          "Another person's dates may refer to a different application or category.",
+          "Coaching material does not replace the institution's own current instructions."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-03",
+        prompt: "Which item belongs in a sensible application tracker?",
+        options: [
+          "Only a hoped-for selection result",
+          "Official URL, dates checked, required documents and submission status",
+          "Rumours about other applicants' marks",
+          "A copied answer to every personal question"
+        ],
+        answerIndex: 1,
+        explanation: "A tracker should make the process auditable: source, dates, requirements and what has been completed.",
+        whyWrong: [
+          "A hoped-for result does not help manage the application steps.",
+          "Other applicants' rumours are not reliable application records.",
+          "Copied personal answers are not truthful preparation."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-04",
+        prompt: "How should you answer a question about why you want to study a BA?",
+        options: [
+          "Give a specific learning interest and a real reason it matters to you",
+          "Say the degree guarantees a particular job",
+          "List every subject without explaining any connection",
+          "Use an impressive-sounding experience you did not have"
+        ],
+        answerIndex: 0,
+        explanation: "A credible answer links a real academic curiosity to the kind of learning you want from a BA.",
+        whyWrong: [
+          "A degree cannot honestly be presented as a guaranteed job outcome.",
+          "A disconnected list does not show direction or reflection.",
+          "Inventing experience undermines the application and interview response."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-05",
+        prompt: "If category or document instructions are unclear, what should you do?",
+        options: [
+          "Guess and submit immediately",
+          "Ask an unofficial group to decide the rule",
+          "Read the current official instructions and use the stated contact or help route",
+          "Upload a document with someone else's information"
+        ],
+        answerIndex: 2,
+        explanation: "Official instructions and the institution's stated support channel are the safest way to resolve an application ambiguity.",
+        whyWrong: [
+          "Guessing can create an avoidable eligibility or document error.",
+          "An unofficial group may misunderstand the current rule.",
+          "Someone else's information is not an acceptable substitute for your document."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "st-xaviers-ba-prep-06",
+        prompt: "Which preparation activity is useful without pretending to know an official paper pattern?",
+        options: [
+          "Practise clear reading, basic reasoning and truthful application explanations",
+          "Memorise an invented section-weight table",
+          "Buy a supposed leaked paper",
+          "Ignore the application because practice alone decides admission"
+        ],
+        answerIndex: 0,
+        explanation: "Transferable readiness can be practised while the live admissions process is verified separately; no invented paper pattern is needed.",
+        whyWrong: [
+          "An invented table is not an official basis for preparation.",
+          "A supposed leak is not a trustworthy or ethical preparation source.",
+          "Application completion remains essential regardless of practice quality."
+        ]
+      })
+    ]
+  },
+
+  "christ-bsc-economics": {
+    collegeId: "christ-bsc-economics",
+    title: "CHRIST BSc Economics: application, interview and presentation readiness",
+    moduleStatus: "application-interview-presentation-readiness",
+    confirmed: [
+      "The official CHRIST course page is the source for the displayed BSc Economics, Honours and Honours with Research course information.",
+      "Programme structure, campus, eligibility and selection details can change; this module prepares communication and economics reasoning without claiming a fixed current process."
+    ],
+    verifyNext: [
+      "Read the current CHRIST course and admissions pages for the intended campus, eligibility, application dates and selection stages.",
+      "Confirm any current interview, presentation, document or fee instructions on the live official pages before relying on them.",
+      "Use official current sources before quoting a statistic, policy detail or selection rule in an answer."
+    ],
+    dailyPlan: [
+      "15 minutes: check one current official application detail and record its source and verification date.",
+      "20 minutes: answer one economics concept question aloud using a definition, example and caveat.",
+      "20 minutes: rehearse a 90-second presentation with an opening, three points, one example and a conclusion.",
+      "10 minutes: review one interview answer for specificity, honesty, listening and a useful follow-up question."
+    ],
+    checklist: [
+      "I have checked the current CHRIST course and admissions pages for my intended route and campus.",
+      "I can explain why BSc Economics interests me without inventing course features or achievements.",
+      "I can define an economics concept and apply it to a simple, truthful example.",
+      "I can deliver a short presentation within a planned time without reading every sentence.",
+      "I can say when a current fact needs verification instead of guessing."
+    ],
+    practiceQuestions: [
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-01",
+        prompt: "A credible answer to ‘Why BSc Economics at CHRIST?’ should combine:",
+        options: [
+          "A truthful academic interest, a learning fit and willingness to verify course details",
+          "A claim that selection is guaranteed",
+          "Generic praise with no reference to learning",
+          "A list of invented awards"
+        ],
+        answerIndex: 0,
+        explanation: "A strong answer is specific about the applicant's interest while remaining accurate about the current course and admissions information.",
+        whyWrong: [
+          "Selection cannot honestly be guaranteed by an applicant's answer.",
+          "Generic praise does not demonstrate academic fit.",
+          "Invented awards are neither truthful nor necessary for a good response."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-02",
+        prompt: "For a 90-second economics presentation, which structure is most usable?",
+        options: [
+          "Long background, many unrelated facts and no close",
+          "Opening question, three connected points, one example and a conclusion",
+          "Only a memorised definition repeated several times",
+          "A current statistic quoted without a source or date"
+        ],
+        answerIndex: 1,
+        explanation: "A short presentation needs a clear route through the idea. The example and conclusion show application and significance without overloading the time.",
+        whyWrong: [
+          "Unrelated facts use time without giving the listener a clear argument.",
+          "Repeating a definition does not explain or apply the concept.",
+          "An undated statistic cannot be responsibly used as current evidence."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-03",
+        prompt: "If an interviewer asks for the current inflation rate and you have not checked it, the best response is to:",
+        options: [
+          "Invent a plausible percentage",
+          "Say that you would verify the current official figure and explain the concept accurately",
+          "Change the topic without acknowledging the gap",
+          "Present an old number as current"
+        ],
+        answerIndex: 1,
+        explanation: "Intellectual honesty means distinguishing a concept you understand from a live number that must be checked in an authoritative current source.",
+        whyWrong: [
+          "A plausible number is still fabricated if it has not been verified.",
+          "Avoiding the question entirely hides a gap instead of addressing it responsibly.",
+          "An old figure may not describe the current period."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-04",
+        prompt: "When a graph contradicts your first expectation, what should you do first?",
+        options: [
+          "Delete the inconvenient observation",
+          "Check axes, units, definitions and the data period before revising the explanation",
+          "Insist that your first idea must be correct",
+          "Claim the graph proves causation"
+        ],
+        answerIndex: 1,
+        explanation: "Careful analysis checks whether the graph was read correctly, then investigates the evidence and revises the hypothesis if needed.",
+        whyWrong: [
+          "Removing an inconvenient observation is not evidence-led analysis.",
+          "Defending an idea without checking the evidence confuses confidence with reasoning.",
+          "A graph can show a pattern without proving a causal relationship."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-05",
+        prompt: "Which interview response shows useful academic curiosity?",
+        options: [
+          "I know everything important already",
+          "I would like to explore a focused question and test it against evidence",
+          "I will agree with any answer the interviewer gives",
+          "I choose economics only because it sounds prestigious"
+        ],
+        answerIndex: 1,
+        explanation: "Curiosity becomes credible when it names a question and a way to learn, compare evidence or revise a view.",
+        whyWrong: [
+          "Claiming complete knowledge leaves no room for honest learning.",
+          "Automatic agreement does not show independent reasoning.",
+          "Prestige alone does not explain an academic interest or learning goal."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "christ-bsc-economics-prep-06",
+        prompt: "If you do not understand a follow-up question in an interview, the best next step is to:",
+        options: [
+          "Pretend to understand and give an unrelated answer",
+          "Ask for the question to be clarified, then reason from what you know",
+          "Blame the interviewer for asking it",
+          "Use a memorised paragraph regardless of the question"
+        ],
+        answerIndex: 1,
+        explanation: "Clarifying the question and then giving a bounded, honest response shows listening and learning discipline.",
+        whyWrong: [
+          "An unrelated answer avoids the task and can create a larger misunderstanding.",
+          "Blaming the interviewer does not demonstrate maturity or problem-solving.",
+          "A memorised paragraph is not responsive communication."
+        ]
+      })
+    ]
+  },
+
+  "cuet-ug": {
+    collegeId: "cuet-ug",
+    title: "CUET (UG): neutral current-bulletin-safe sampler",
+    moduleStatus: "neutral-current-bulletin-safe-sampler",
+    officialPatternStatus: "not-claimed",
+    samplerNote:
+      "This is a neutral practice sampler, not an official CUET (UG) pattern, syllabus, subject combination, question paper or score prediction.",
+    confirmed: [
+      "The NTA CUET (UG) official home is the source to use for the current year bulletin, dates, subjects and participating-university rules.",
+      "No official CUET (UG) pattern, current cutoff, score statistic or subject rule is hard-coded in this module."
+    ],
+    verifyNext: [
+      "Read the current CUET (UG) bulletin on the official NTA site before choosing subjects, languages, test details or application dates.",
+      "Check each intended university's current CUET requirements separately; participation does not make every programme rule identical.",
+      "Replace planning assumptions with the current official notices if the bulletin or university instructions change."
+    ],
+    dailyPlan: [
+      "10 minutes: verify one current bulletin or university requirement and record the official source and date.",
+      "25 minutes: attempt two sampler questions without treating their mix or difficulty as an official blueprint.",
+      "15 minutes: review the reasoning for each wrong answer and note whether the issue was concept, reading or calculation.",
+      "10 minutes: update a subject and application checklist only from current official instructions."
+    ],
+    checklist: [
+      "I have read the current official CUET (UG) bulletin before making subject or date decisions.",
+      "I understand that this sampler does not claim an official pattern or predict a score.",
+      "I have checked the intended university and programme rules in addition to the NTA information.",
+      "I keep current dates, subjects, eligibility and application details linked to their official source.",
+      "I review errors by reasoning rather than assuming a practice question represents the live exam."
+    ],
+    practiceQuestions: [
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-01",
+        prompt: "Before selecting CUET (UG) subjects for an intended programme, the safest first step is to:",
+        options: [
+          "Copy a subject combination from an old video",
+          "Read the current official bulletin and the university's programme requirements",
+          "Assume every participating university uses identical rules",
+          "Choose subjects based only on a friend's score"
+        ],
+        answerIndex: 1,
+        explanation: "Subject choices should be based on the current NTA bulletin and the current requirements of the intended programme or university.",
+        whyWrong: [
+          "An old video may describe a different cycle or incomplete rule set.",
+          "Participating universities can publish programme-specific requirements.",
+          "A friend's score does not establish the subject requirements for your programme."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-02",
+        prompt: "What does this neutral sampler claim about the official CUET (UG) pattern?",
+        options: [
+          "It reproduces the official section weights",
+          "It is a guaranteed score predictor",
+          "It makes no official pattern claim and is only broad practice",
+          "It is an authentic past paper"
+        ],
+        answerIndex: 2,
+        explanation: "The sampler is intentionally neutral and current-bulletin-safe. It provides practice without presenting an invented blueprint or past-paper claim.",
+        whyWrong: [
+          "No official section weights are asserted here.",
+          "A small original practice set cannot predict an applicant's score.",
+          "These questions are original practice material, not an authentic past paper."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-03",
+        prompt: "A current date is missing from your preparation notes. What is the responsible action?",
+        options: [
+          "Use the date from the previous cycle without checking",
+          "Check the current official bulletin or notice and record its date",
+          "Estimate the date from a coaching calendar",
+          "Ignore the deadline until after it passes"
+        ],
+        answerIndex: 1,
+        explanation: "Dates are time-sensitive. The current official bulletin or notice should be checked and dated before it controls an application plan.",
+        whyWrong: [
+          "Previous-cycle dates may not carry over.",
+          "A coaching calendar is not the authoritative source for the current deadline.",
+          "Waiting until after a deadline removes the opportunity to act."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-04",
+        prompt: "A student misses a sampler question because of a calculation error. The best review is to:",
+        options: [
+          "Label the entire subject impossible",
+          "Rework the steps, identify the first error and try a similar original example",
+          "Memorise the answer choice without understanding it",
+          "Assume the official exam will contain the same question"
+        ],
+        answerIndex: 1,
+        explanation: "Error review is most useful when it identifies the first incorrect step and tests whether the corrected method transfers to a new example.",
+        whyWrong: [
+          "One calculation error does not establish that an entire subject is impossible.",
+          "Memorising an option does not repair the reasoning process.",
+          "An original sampler question makes no claim about an official future question."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-05",
+        prompt: "Which source should settle a question about an NTA-published CUET (UG) application rule?",
+        options: [
+          "The current official NTA bulletin or notice",
+          "A screenshot with no date or link",
+          "An anonymous comment",
+          "A practice question's explanation"
+        ],
+        answerIndex: 0,
+        explanation: "The current official NTA bulletin or notice is the primary source for NTA's published application rules.",
+        whyWrong: [
+          "An undated screenshot cannot show whether the rule is current or complete.",
+          "An anonymous comment has no demonstrated authority for an application rule.",
+          "Practice explanations teach reasoning and do not publish official application rules."
+        ]
+      }),
+      collegePracticeQuestion({
+        id: "cuet-ug-prep-06",
+        prompt: "Why should a CUET (UG) applicant check an intended university separately after reading the NTA bulletin?",
+        options: [
+          "Because the bulletin is never useful",
+          "Because every programme automatically accepts every subject",
+          "Because programme and university requirements may add route-specific instructions",
+          "Because unofficial rankings replace official requirements"
+        ],
+        answerIndex: 2,
+        explanation: "The NTA bulletin and university or programme instructions answer related but distinct questions, so both current sources matter.",
+        whyWrong: [
+          "The official bulletin remains important for the common test information it publishes.",
+          "Automatic acceptance of every subject is an unsupported assumption.",
+          "Unofficial rankings cannot replace the programme's published requirements."
+        ]
+      })
+    ]
+  }
+});

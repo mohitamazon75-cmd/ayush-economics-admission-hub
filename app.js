@@ -1,4 +1,5 @@
 import {
+  COLLEGE_PREP,
   COLLEGES,
   ECONOMICS_LESSONS,
   IIMB_MOCKS,
@@ -118,6 +119,13 @@ function recommendation() {
   if (weakest && weakest[1].percentage < 70) return { title: `Repair ${DOMAIN_LABELS[weakest[0]]}`, body: `Your last timed set was ${weakest[1].percentage}% in this area. Do 10 focused questions and review every miss.`, action: "start-topic", value: weakest[0] };
   if (state.interviewAttempts.length === 0) return { title: "Practise one honest interview answer", body: "The offline coach scores clarity, reasoning, relevance, structure and authenticity. It does not pretend to be an admissions decision.", action: "navigate", value: "interview" };
   return { title: "Keep the improvement loop alive", body: "Take another timed set or rehearse a 90-second economics idea. Compare your evidence, not a made-up probability.", action: "navigate", value: "presentations" };
+}
+
+function reviewQueue() {
+  const latest = latestAttempt();
+  const latestMisses = latest?.mistakes?.filter((item) => !item.correct).slice(0, 4) || [];
+  const topicMisses = Object.values(state.topicAnswers).filter((item) => !item.correct).length;
+  return { latestMisses, topicMisses, total: latestMisses.length + topicMisses };
 }
 
 function navMarkup() {
@@ -314,13 +322,14 @@ function renderMockRunner() {
   if (!question) return `<div class="empty-state">This practice set is unavailable. Return to Mock Tests.</div>`;
   const total = testSession.questions.length;
   const isTopic = testSession.type === "topic";
+  const isCollege = testSession.type === "college";
   const answeredCount = testSession.answers.filter((answer) => answer !== null).length;
   return `
     <section class="test-shell" aria-labelledby="test-title">
-      <div class="test-topbar"><div class="test-title-wrap"><p class="section-kicker">${isTopic ? "Focused practice" : "IIMB readiness mock"}</p><h2 id="test-title">${escapeHTML(testSession.title)}</h2><p>AI-created practice · ${answeredCount}/${total} answered · use the navigation to move around.</p></div><div id="test-timer" class="timer ${testSession.timeRemaining < 300 ? "warning" : ""}" aria-live="polite">◷ ${formatTimer(testSession.timeRemaining)}</div></div>
+      <div class="test-topbar"><div class="test-title-wrap"><p class="section-kicker">${isCollege ? "Route readiness practice" : isTopic ? "Focused practice" : "IIMB readiness mock"}</p><h2 id="test-title">${escapeHTML(testSession.title)}</h2><p>AI-created practice · ${answeredCount}/${total} answered · use the navigation to move around.</p></div><div id="test-timer" class="timer ${testSession.timeRemaining < 300 ? "warning" : ""}" aria-live="polite">◷ ${formatTimer(testSession.timeRemaining)}</div></div>
       <div class="test-layout">
         <div>
-          <div class="question-head"><div><span class="question-index">Question ${testSession.current + 1} of ${total}</span><div class="pill-row" style="margin-top:9px"><span class="tag">${escapeHTML(DOMAIN_LABELS[question.domain] || question.domain)}</span><span class="difficulty ${question.difficulty}">${escapeHTML(question.difficulty)}</span></div></div><span class="tiny">${question.tags.slice(0, 2).map((tag) => `#${escapeHTML(tag)}`).join(" ")}</span></div>
+          <div class="question-head"><div><span class="question-index">Question ${testSession.current + 1} of ${total}</span><div class="pill-row" style="margin-top:9px"><span class="tag">${escapeHTML(DOMAIN_LABELS[question.domain] || (question.domain === "routeReadiness" || !question.domain ? "Route readiness" : question.domain))}</span><span class="difficulty ${question.difficulty || "medium"}">${escapeHTML(question.difficulty || "medium")}</span></div></div><span class="tiny">${(question.tags || []).slice(0, 2).map((tag) => `#${escapeHTML(tag)}`).join(" ")}</span></div>
           <p class="question-prompt">${escapeHTML(question.prompt)}</p>
           <div class="options-list" role="radiogroup" aria-label="Answer options">${question.options.map((option, index) => `<button class="option-button ${testSession.answers[testSession.current] === index ? "selected" : ""}" data-action="select-test-option" data-value="${index}" role="radio" aria-checked="${testSession.answers[testSession.current] === index}"><span class="option-letter">${String.fromCharCode(65 + index)}</span><span>${escapeHTML(option)}</span></button>`).join("")}</div>
           <div class="question-actions"><button class="button-secondary" data-action="previous-question" ${testSession.current === 0 ? "disabled" : ""}>← Previous</button><div class="action-group"><button class="button-secondary" data-action="next-question" ${testSession.current === total - 1 ? "disabled" : ""}>Next →</button></div></div>
@@ -331,6 +340,12 @@ function renderMockRunner() {
   `;
 }
 
+function renderWrongOptionReview(item) {
+  if (!item.options?.length) return escapeHTML(item.alternativeExplanations.join(" ") || "The worked solution above is the deciding check.");
+  const wrong = item.options.map((option, index) => ({ option, index })).filter((option) => option.index !== item.answerIndex);
+  return `<ul class="review-list">${wrong.map((option, index) => `<li><b>${escapeHTML(option.option)}</b> — ${escapeHTML(item.whyWrong?.[index] || item.alternativeExplanations[index] || item.alternativeExplanations[0] || "This option does not satisfy the condition or calculation in the worked solution.")}</li>`).join("")}</ul>`;
+}
+
 function renderMockResults() {
   if (!lastResults) return `<div class="empty-state">No result yet. Start a set from Mock Tests.</div>`;
   const result = lastResults;
@@ -338,10 +353,10 @@ function renderMockResults() {
     <div class="page-header"><div><p class="page-kicker">Review, then repeat</p><h1>Here is what the attempt says.</h1><p class="lede">A score is only useful when it tells you what to do next. Read the weak areas before you start another set.</p></div><div class="header-actions"><button class="button-primary" data-action="download-summary">Download summary</button><button class="button-secondary" data-view="mocks">Back to mocks</button></div></div>
     <section class="results-layout">
       <article class="card result-hero"><span class="score-pill">${escapeHTML(result.kindLabel)}</span><div class="result-score">${result.score}%</div><p>${result.correct} correct out of ${result.total}. ${result.score >= 70 ? "Good base. Keep the weakest area visible." : "Use the worked review as your study plan, not as a judgement."}</p><p class="tiny" style="color:#bac7da">Attempted ${formatDate(result.date)} · ${result.unanswered} unanswered</p></article>
-      <article class="card breakdown-card"><p class="section-kicker">Skill breakdown</p><h3>Where the marks moved.</h3>${Object.entries(result.breakdown).map(([domain, info]) => `<div class="bar-row"><div class="bar-label"><span>${escapeHTML(DOMAIN_LABELS[domain] || domain)}</span><span>${info.correct}/${info.total} · ${info.percentage}%</span></div><div class="bar-track"><div class="bar-value" style="width:${info.percentage}%"></div></div></div>`).join("")}</article>
+      <article class="card breakdown-card"><p class="section-kicker">Skill breakdown</p><h3>Where the marks moved.</h3>${Object.entries(result.breakdown).map(([domain, info]) => `<div class="bar-row"><div class="bar-label"><span>${escapeHTML(DOMAIN_LABELS[domain] || (domain === "routeReadiness" ? "Route readiness" : domain))}</span><span>${info.correct}/${info.total} · ${info.percentage}%</span></div><div class="bar-track"><div class="bar-value" style="width:${info.percentage}%"></div></div></div>`).join("")}</article>
     </section>
     <div class="section-row"><div><p class="section-kicker">Weak-area recommendations</p><h2>Review the misses with intent.</h2></div></div>
-    <section class="card card-pad"><div class="mistake-list">${result.mistakes.length ? result.mistakes.map((item) => `<div class="mistake-item"><strong>Q${item.number} · ${escapeHTML(DOMAIN_LABELS[item.domain] || item.domain)} · ${item.correct ? "Correct" : "Review"}</strong><p><b>${item.correct ? "Your answer" : "Correct answer"}:</b> ${escapeHTML(item.correct ? item.selected : item.answer)}. ${escapeHTML(item.explanation)}</p>${!item.correct ? `<p style="margin-top:5px"><b>Why the alternatives miss:</b> ${escapeHTML(item.alternativeExplanations.join(" "))}</p>` : ""}</div>`).join("") : `<div class="empty-state"><strong>Clean run.</strong><br>You answered every question correctly. Move to a harder topic or practise explaining one concept aloud.</div>`}</div></section>
+    <section class="card card-pad"><div class="mistake-list">${result.mistakes.length ? result.mistakes.map((item) => `<div class="mistake-item"><strong>Q${item.number} · ${escapeHTML(DOMAIN_LABELS[item.domain] || (item.domain === "routeReadiness" ? "Route readiness" : item.domain))} · ${item.correct ? "Correct" : "Review"}</strong><p><b>${item.correct ? "Your answer" : "Correct answer"}:</b> ${escapeHTML(item.correct ? item.selected : item.answer)}. ${escapeHTML(item.explanation)}</p>${!item.correct ? `<div style="margin-top:8px"><b>Why the alternatives miss</b>${renderWrongOptionReview(item)}</div>` : ""}</div>`).join("") : `<div class="empty-state"><strong>Clean run.</strong><br>You answered every question correctly. Move to a harder topic or practise explaining one concept aloud.</div>`}</div></section>
     <div class="section-row"><div><p class="section-kicker">Next move</p><h2>${escapeHTML(result.nextMove.title)}</h2></div><button class="button-primary" data-action="${result.nextMove.action}" data-value="${result.nextMove.value || ""}">${escapeHTML(result.nextMove.label)} ↗</button></div>
   `;
 }
@@ -412,9 +427,12 @@ function renderProgress() {
   const averageInterview = state.interviewAttempts.length ? Math.round(state.interviewAttempts.reduce((sum, item) => sum + item.score, 0) / state.interviewAttempts.length) : 0;
   const readiness = readinessLabel();
   const next = recommendation();
+  const queue = reviewQueue();
   return `
     <div class="page-header"><div><p class="page-kicker">Your evidence · local only</p><h1>Progress you can act on.</h1><p class="lede">There is no fabricated rank or admission probability here. This page turns your actual attempts into a short next step.</p></div><div class="header-actions"><span class="status-label ${readiness.tone}">${readiness.label}</span><button class="button-secondary" data-action="download-summary">Download latest result</button></div></div>
     <section class="progress-layout"><article class="card progress-main"><p class="section-kicker">Latest skill signal</p><h2>${latest ? `Mock score ${latest.score}%` : "Start with a baseline"}</h2>${skills.map((skill) => `<div class="skill-row"><div class="skill-top"><span>${escapeHTML(DOMAIN_LABELS[skill.domain])}</span><span>${skill.percentage ? `${skill.percentage}%` : "—"}</span></div><div class="progress-track"><div class="progress-fill" style="width:${skill.percentage}%"></div></div><p class="tiny" style="margin-top:6px">${escapeHTML(skill.note)}</p></div>`).join("")}</article><aside class="card recommendation-card"><p class="section-kicker">What should I practise today?</p><h3>${escapeHTML(next.title)}</h3><p>${escapeHTML(next.body)}</p><div class="plan-list"><div class="plan-item"><span>1</span><p>20–30 minutes of focused practice</p></div><div class="plan-item"><span>2</span><p>Review every wrong answer, not only the score</p></div><div class="plan-item"><span>3</span><p>Finish with one spoken explanation</p></div></div><button class="button-primary" style="margin-top:18px" data-action="${next.action}" data-value="${next.value || ""}">Begin recommendation ↗</button></aside></section>
+    <div class="section-row"><div><p class="section-kicker">Review queue · the part that compounds</p><h2>${queue.total ? `${queue.total} things worth revisiting.` : "Your review queue is clear."}</h2></div><span class="tiny">Correct answers feel good. Reviewed mistakes change the next attempt.</span></div>
+    <section class="three-col"><article class="card card-pad"><p class="section-kicker">Latest misses</p>${queue.latestMisses.length ? `<div class="mistake-list">${queue.latestMisses.map((item) => `<div class="mistake-item"><strong>Q${item.number} · ${escapeHTML(DOMAIN_LABELS[item.domain] || item.domain)}</strong><p>${escapeHTML(item.explanation)}</p></div>`).join("")}</div>` : `<div class="empty-state">No recent timed misses to review.</div>`}</article><article class="card card-pad"><p class="section-kicker">Focused practice misses</p><strong class="metric-value" style="font-size:2.6rem">${queue.topicMisses}</strong><p class="tiny">Questions saved as incorrect in topic practice. Retry them after one explanation review.</p><button class="button-quiet" data-view="mocks">Open practice lab</button></article><article class="card card-pad"><p class="section-kicker">Evidence quality</p><h3>${latest ? "Specific enough to act on" : "Ready for a first signal"}</h3><p class="muted">${latest ? "Your breakdown is based on an actual attempt, not a prediction. Keep the date and the review notes together." : "One honest baseline will make the rest of this page more useful."}</p></article></section>
     <div class="section-row"><div><p class="section-kicker">Interview signal</p><h2>Conversation practice, measured lightly.</h2></div></div>
     <section class="three-col"><div class="card metric-card"><span class="metric-label">Average offline score</span><strong class="metric-value">${averageInterview || "—"}</strong><span class="tiny">Across ${state.interviewAttempts.length} answers</span></div><div class="card metric-card"><span class="metric-label">Presentation sessions</span><strong class="metric-value">${state.presentationSessions.length}</strong><span class="tiny">Saved reflections</span></div><div class="card metric-card"><span class="metric-label">Lessons complete</span><strong class="metric-value">${state.completedLessons.length}/10</strong><span class="tiny">Economics made simple</span></div></section>
     <div class="section-row"><div><p class="section-kicker">Attempt history</p><h2>Look for trends, not perfection.</h2></div></div>
@@ -439,11 +457,13 @@ function renderSourceModal() {
 function renderCollegeModal(collegeId) {
   const college = COLLEGES.find((item) => item.id === collegeId);
   const source = SOURCES.records.find((item) => item.id === college?.admissionsSourceId);
+  const prep = COLLEGE_PREP[collegeId];
   if (!college || !source) return;
   const iimb = college.id === "iimb-bba-dbe";
   const christ = college.id === "christ-bsc-economics";
   const extra = iimb ? `<div class="notice info"><strong>2026 IIMB reference</strong>Class 10 pass with Mathematics as a compulsory subject; Class 12 60% for General/NC-OBC/EWS and 55% for SC/ST/PwD on the official page. Routes: IIMB Entrance Test, CUET General Test and JEE Main.</div>` : christ ? `<div class="notice success"><strong>Live Economics route</strong>The official course page currently lists BSc Economics at the Delhi NCR campus, with an application flow that includes entrance test if applicable, assessment and interview. Confirm the live campus-specific details before applying.</div>` : `<div class="notice warn"><strong>Readiness only</strong>This hub does not invent an entrance paper for this route. Use the official page for the current application, merit or subject rules.</div>`;
-  showModal(`<div class="page-header"><div><p class="page-kicker">${escapeHTML(college.name)}</p><h2>${escapeHTML(college.programme)}</h2><p class="tiny">Verified ${escapeHTML(source.verifiedOn)} · ${escapeHTML(source.type)}</p></div></div>${extra}<div class="card card-pad" style="margin-top:15px"><p class="section-kicker">How to prepare here</p><p class="muted">${escapeHTML(iimb ? "Use the full IIMB mock and interview coach. Keep calling the programme BBA-DBE, not Economics." : christ ? "Practise Economics concepts, a concise programme-fit answer and a 90-second topic. Refresh the course page before each application cycle." : college.id === "cuet-ug" ? "Choose subjects only after reading the current NTA bulletin and target-university mapping. The neutral sampler is not a CUET blueprint." : "Build academic readiness, application accuracy and economics fluency. Do not assume that an entrance test exists when the official route is merit-based.")}</p>${source.url ? `<a class="button-primary" href="${source.url}" target="_blank" rel="noreferrer" style="display:inline-flex;text-decoration:none">Open official source ↗</a>` : ""}</div>`);
+  const prepContent = prep ? `<div class="card card-pad" style="margin-top:15px"><div class="section-row" style="margin:0 0 14px"><div><p class="section-kicker">Separate route module</p><h3>${escapeHTML(prep.title)}</h3></div><span class="status-label ${prep.officialPatternStatus === "not-claimed" ? "caution" : "live"}">${prep.practiceQuestions.length} original questions</span></div>${prep.samplerNote ? `<div class="notice warn"><strong>Pattern guardrail</strong>${escapeHTML(prep.samplerNote)}</div>` : ""}<div class="coach-columns" style="margin-top:14px"><div class="coach-block"><h4>Confirmed</h4><ul>${prep.confirmed.map((item) => `<li>${escapeHTML(item)}</li>`).join("")}</ul></div><div class="coach-block"><h4>Verify next</h4><ul>${prep.verifyNext.map((item) => `<li>${escapeHTML(item)}</li>`).join("")}</ul></div></div><div style="margin-top:15px"><h4>Daily plan</h4><ul class="talking-points">${prep.dailyPlan.map((item) => `<li>${escapeHTML(item)}</li>`).join("")}</ul></div><div class="card-footer"><span class="tiny">${escapeHTML(prep.moduleStatus.replaceAll("-", " "))}</span><button class="button-primary" data-action="start-college-practice" data-value="${collegeId}">Start route practice ↗</button></div></div>` : "";
+  showModal(`<div class="page-header"><div><p class="page-kicker">${escapeHTML(college.name)}</p><h2>${escapeHTML(college.programme)}</h2><p class="tiny">Verified ${escapeHTML(source.verifiedOn)} · ${escapeHTML(source.type)}</p></div></div>${extra}<div class="card card-pad" style="margin-top:15px"><p class="section-kicker">How to prepare here</p><p class="muted">${escapeHTML(iimb ? "Use the full IIMB mock and interview coach. Keep calling the programme BBA-DBE, not Economics." : christ ? "Practise Economics concepts, a concise programme-fit answer and a 90-second topic. Refresh the course page before each application cycle." : college.id === "cuet-ug" ? "Choose subjects only after reading the current NTA bulletin and target-university mapping. The neutral sampler is not a CUET blueprint." : "Build academic readiness, application accuracy and economics fluency. Do not assume that an entrance test exists when the official route is merit-based.")}</p>${source.url ? `<a class="button-primary" href="${source.url}" target="_blank" rel="noreferrer" style="display:inline-flex;text-decoration:none">Open official source ↗</a>` : ""}</div>${prepContent}`);
 }
 
 function lessonQuizQuestion(lesson, index) {
@@ -532,6 +552,25 @@ function startTopicPractice(domain) {
   startTestTimer();
 }
 
+function startCollegePractice(collegeId) {
+  const prep = COLLEGE_PREP[collegeId];
+  if (!prep?.practiceQuestions?.length) return showToast("This route does not have a practice set yet.");
+  closeModal();
+  testSession = {
+    type: "college",
+    testId: `college-${collegeId}`,
+    title: prep.title,
+    questions: prep.practiceQuestions,
+    answers: Array(prep.practiceQuestions.length).fill(null),
+    current: 0,
+    timeRemaining: Math.max(10, prep.practiceQuestions.length * 120),
+    startedAt: Date.now()
+  };
+  currentView = "mock-run";
+  render();
+  startTestTimer();
+}
+
 function startTestTimer() {
   stopTestTimer();
   testTimerId = window.setInterval(() => {
@@ -564,17 +603,21 @@ function submitTest() {
   session.questions.forEach((question, index) => {
     const answer = session.answers[index];
     const isCorrect = answer === question.answerIndex;
+    const domain = question.domain || "routeReadiness";
     if (isCorrect) correct += 1;
-    if (!breakdown[question.domain]) breakdown[question.domain] = { correct: 0, total: 0, percentage: 0 };
-    breakdown[question.domain].total += 1;
-    if (isCorrect) breakdown[question.domain].correct += 1;
+    if (!breakdown[domain]) breakdown[domain] = { correct: 0, total: 0, percentage: 0 };
+    breakdown[domain].total += 1;
+    if (isCorrect) breakdown[domain].correct += 1;
     mistakes.push({
       number: index + 1,
-      domain: question.domain,
+      domain,
       correct: isCorrect,
       selected: answer === null ? "Not answered" : question.options[answer],
       answer: question.answer,
+      answerIndex: question.answerIndex,
       explanation: question.explanation,
+      options: question.options,
+      whyWrong: question.whyWrong || [],
       alternativeExplanations: question.alternativeExplanations || []
     });
   });
@@ -585,7 +628,7 @@ function submitTest() {
     id: `attempt-${Date.now()}`,
     testId: session.testId,
     title: session.title,
-    kindLabel: session.type === "topic" ? "Focused practice" : "IIMB readiness mock",
+    kindLabel: session.type === "college" ? "Route readiness practice" : session.type === "topic" ? "Focused practice" : "IIMB readiness mock",
     date: new Date().toISOString(),
     correct,
     total: session.questions.length,
@@ -593,7 +636,7 @@ function submitTest() {
     score,
     breakdown,
     mistakes,
-    nextMove: weak === "all" ? { title: "Keep your explanation muscle warm", action: "navigate", value: "interview", label: "Practise an interview answer" } : { title: `Practise ${DOMAIN_LABELS[weak]}`, action: "start-topic", value: weak, label: "Start focused set" }
+    nextMove: weak === "all" || weak === "routeReadiness" ? { title: "Keep your explanation muscle warm", action: "navigate", value: "interview", label: "Practise an interview answer" } : { title: `Practise ${DOMAIN_LABELS[weak]}`, action: "start-topic", value: weak, label: "Start focused set" }
   };
   if (session.type === "topic") {
     session.questions.forEach((question, index) => {
@@ -811,6 +854,7 @@ function handleAction(action, value) {
       break;
     case "next-lesson-question": if (lessonSession) { lessonSession.index += 1; lessonSession.selected = null; lessonSession.feedback = null; renderLessonModal(); } break;
     case "view-college": renderCollegeModal(value); break;
+    case "start-college-practice": startCollegePractice(value); break;
     case "show-sources": renderSourceModal(); break;
     case "download-summary": downloadSummary(); break;
     case "reset-progress": resetProgress(); break;
